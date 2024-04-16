@@ -1,42 +1,44 @@
 import React, { useState, useEffect, useRef } from 'react';
 
-const FCFS = ({ rows }) => {
+const SJF = ({ rows }) => {
   const [processes, setProcesses] = useState([]);
   const avgWaitingTimeRef = useRef(0);
   const avgTurnaroundTimeRef = useRef(0);
 
   useEffect(() => {
     if (rows && rows.length > 0) {
-
-      const sortedRows = rows.slice().sort((a, b) => parseInt(a.arrivalTime) - parseInt(b.arrivalTime));
-
       let totalWaitingTime = 0;
       let totalTurnaroundTime = 0;
 
-      let prevFinishTime = 0;
-      const updatedProcesses = sortedRows.map((row, index) => {
-        const startTime = index > 0 ? prevFinishTime : parseInt(row.arrivalTime);
-        const waitingTime = startTime - parseInt(row.arrivalTime);
-        const finishTime = startTime + parseInt(row.burstTime);
-        const turnaroundTime = finishTime - parseInt(row.arrivalTime);
-
-        prevFinishTime = finishTime;
-        totalWaitingTime += waitingTime;
-        totalTurnaroundTime += turnaroundTime;
-
-        return {
-          ...row,
-          startTime,
-          finishTime,
-          waitingTime,
-          turnaroundTime
-        };
+      // Sort processes based on arrival time and burst time
+      const sortedRows = rows.slice().sort((a, b) => {
+        if (parseInt(a.arrivalTime) === parseInt(b.arrivalTime)) {
+          return parseInt(a.burstTime) - parseInt(b.burstTime);
+        }
+        return parseInt(a.arrivalTime) - parseInt(b.arrivalTime);
       });
 
+      // Calculate waiting time, start time, finish time, and turnaround time for each process
+      sortedRows.forEach((row, index) => {
+        const startTime = index === 0 ? parseInt(row.arrivalTime) : processes[index - 1].finishTime;
+        const waitingTime = startTime - parseInt(row.arrivalTime);
+        totalWaitingTime += waitingTime;
+
+        const finishTime = startTime + parseInt(row.burstTime);
+        const turnaroundTime = finishTime - parseInt(row.arrivalTime);
+        totalTurnaroundTime += turnaroundTime;
+
+        row.waitingTime = waitingTime;
+        row.startTime = startTime;
+        row.finishTime = finishTime;
+        row.turnaroundTime = turnaroundTime;
+      });
+
+      // Calculate average waiting time and average turnaround time
       avgWaitingTimeRef.current = totalWaitingTime / sortedRows.length;
       avgTurnaroundTimeRef.current = totalTurnaroundTime / sortedRows.length;
 
-      setProcesses(updatedProcesses);
+      setProcesses(sortedRows);
     }
   }, [rows]);
 
@@ -46,7 +48,7 @@ const FCFS = ({ rows }) => {
       <div className='d-flex my-4'>
         {processes.map((process)=>(<div className="border border-info text-center bg-light" style={{height: '500%', width: '20%'}}>P{process.id}<br/>({process.startTime}-{process.finishTime})</div>))}
       </div>
-      <table style={{margin: "auto"}} class="table text-center table-bordered">
+      <table style={{ margin: "auto" }} className="table text-center table-bordered">
         <thead>
           <tr className='table-primary'>
             <th scope="col">Process</th>
@@ -80,4 +82,4 @@ const FCFS = ({ rows }) => {
   );
 };
 
-export default FCFS;
+export default SJF;

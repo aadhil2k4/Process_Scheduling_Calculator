@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import Fcfs from './Fcfs';
+import Sjf from './Sjf';
 
 
 const Table = ({onEvaluate}) => {
@@ -7,6 +8,7 @@ const Table = ({onEvaluate}) => {
     const [priority, Setpriority] = useState(false);
     const [quantum, Setquantum] = useState('')
     const [showFcfs, setShowFcfs] = useState(false)
+    const [showSjf, setShowSjf] = useState(false)
 
     const [rows, setRows] = useState([
         {id: '1', arrivalTime: '', burstTime: '', priority: ''},
@@ -46,6 +48,9 @@ const Table = ({onEvaluate}) => {
         onEvaluate(tableData,quantum)
         if(title==='FCFS'){
             setShowFcfs(true)
+        }
+        else if(title==='SJF'){
+          setShowSjf(true)
         }
     }
 
@@ -107,8 +112,12 @@ const Table = ({onEvaluate}) => {
 </div>
 {showFcfs && (
                 <Fcfs rows={rows} />
-            )}    </div>
+            )}
+            {showSjf && (
+                <Sjf rows={rows} />
+            )}     </div>
   )
 }
+
 
 export default Table
