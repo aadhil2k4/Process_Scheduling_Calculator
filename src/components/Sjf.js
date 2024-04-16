@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 
 const SJF = ({ rows }) => {
-  const [processes, setProcesses] = useState([]);
+  const [executedProcesses, setExecutedProcesses] = useState([]); // Track executed processes
   const avgWaitingTimeRef = useRef(0);
   const avgTurnaroundTimeRef = useRef(0);
 
@@ -10,45 +10,81 @@ const SJF = ({ rows }) => {
       let totalWaitingTime = 0;
       let totalTurnaroundTime = 0;
 
-      // Sort processes based on arrival time and burst time
-      const sortedRows = rows.slice().sort((a, b) => {
-        if (parseInt(a.arrivalTime) === parseInt(b.arrivalTime)) {
-          return parseInt(a.burstTime) - parseInt(b.burstTime);
+      const readyQueue = [...rows]; // Initialize the ready queue with all processes
+
+      // Sort ready queue based on arrival time
+      readyQueue.sort((a, b) => parseInt(a.arrivalTime) - parseInt(b.arrivalTime));
+
+      const updatedExecutedProcesses = [];
+
+      let currentTime = 0; // Track current time
+
+      while (readyQueue.length > 0) {
+        // Filter processes that have arrived by the current time
+        const availableProcesses = readyQueue.filter(process => parseInt(process.arrivalTime) <= currentTime);
+
+        if (availableProcesses.length === 0) {
+          // If no processes are available, move time forward to the arrival time of the next process
+          currentTime = parseInt(readyQueue[0].arrivalTime);
+          continue;
         }
-        return parseInt(a.arrivalTime) - parseInt(b.arrivalTime);
-      });
 
-      // Calculate waiting time, start time, finish time, and turnaround time for each process
-      sortedRows.forEach((row, index) => {
-        const startTime = index === 0 ? parseInt(row.arrivalTime) : processes[index - 1].finishTime;
-        const waitingTime = startTime - parseInt(row.arrivalTime);
+        // Find the process with the shortest burst time among available processes
+        const shortestJob = availableProcesses.reduce((minProcess, currentProcess) => {
+          return parseInt(currentProcess.burstTime) < parseInt(minProcess.burstTime) ? currentProcess : minProcess;
+        });
+
+        // Update current time
+        currentTime += parseInt(shortestJob.burstTime);
+
+        // Remove the executed process from the ready queue
+        const index = readyQueue.findIndex(process => process === shortestJob);
+        readyQueue.splice(index, 1);
+
+        // Calculate waiting time and turnaround time for the executed process
+        const waitingTime = currentTime - parseInt(shortestJob.arrivalTime) - parseInt(shortestJob.burstTime);
+        const turnaroundTime = waitingTime + parseInt(shortestJob.burstTime);
+
+        // Update total waiting time and total turnaround time
         totalWaitingTime += waitingTime;
-
-        const finishTime = startTime + parseInt(row.burstTime);
-        const turnaroundTime = finishTime - parseInt(row.arrivalTime);
         totalTurnaroundTime += turnaroundTime;
 
-        row.waitingTime = waitingTime;
-        row.startTime = startTime;
-        row.finishTime = finishTime;
-        row.turnaroundTime = turnaroundTime;
-      });
+        // Add the executed process to the updated executed processes
+        updatedExecutedProcesses.push({
+          ...shortestJob,
+          waitingTime: waitingTime,
+          startTime: currentTime - parseInt(shortestJob.burstTime),
+          finishTime: currentTime,
+          turnaroundTime: turnaroundTime
+        });
+      }
 
       // Calculate average waiting time and average turnaround time
-      avgWaitingTimeRef.current = totalWaitingTime / sortedRows.length;
-      avgTurnaroundTimeRef.current = totalTurnaroundTime / sortedRows.length;
+      avgWaitingTimeRef.current = totalWaitingTime / rows.length;
+      avgTurnaroundTimeRef.current = totalTurnaroundTime / rows.length;
 
-      setProcesses(sortedRows);
+      // Set the executed processes
+      setExecutedProcesses(updatedExecutedProcesses);
     }
-  }, [rows]);
+  }, [rows]); // Re-run whenever rows change
 
   return (
     <div className='container my-5'>
       <h4>Gantt Chart:</h4>
       <div className='d-flex my-4'>
-        {processes.map((process)=>(<div className="border border-info text-center bg-light" style={{height: '500%', width: '20%'}}>P{process.id}<br/>({process.startTime}-{process.finishTime})</div>))}
+        {executedProcesses.map((process, index) => (
+          <div
+            key={index}
+            className="border border-info text-center bg-light"
+            style={{ height: '500%', width: '20%' }}
+          >
+            P{process.id}
+            <br />
+            ({process.startTime}-{process.finishTime})
+          </div>
+        ))}
       </div>
-      <table style={{ margin: "auto" }} className="table text-center table-bordered">
+      <table style={{ margin: 'auto' }} className="table text-center table-bordered">
         <thead>
           <tr className='table-primary'>
             <th scope="col">Process</th>
@@ -61,8 +97,8 @@ const SJF = ({ rows }) => {
           </tr>
         </thead>
         <tbody>
-          {processes.map((process) => (
-            <tr key={process.id}>
+          {executedProcesses.map((process, index) => (
+            <tr key={index}>
               <td>{`P${process.id}`}</td>
               <td>{process.arrivalTime}</td>
               <td>{process.burstTime}</td>
