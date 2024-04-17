@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Fcfs from './Fcfs';
 import Sjf from './Sjf';
 import RoundRobinScheduler from './RR'; 
+import PrioritySJF from './SJFPriority';
 
 const Table = ({ onEvaluate }) => {
   const [title, setTitle] = useState('FCFS');
@@ -10,6 +11,7 @@ const Table = ({ onEvaluate }) => {
   const [showFcfs, setShowFcfs] = useState(false);
   const [showSjf, setShowSjf] = useState(false);
   const [showRoundRobin, setShowRoundRobin] = useState(false); 
+  const [showPrioritySJF, setPrioritySJF] = useState(false);
 
   const [rows, setRows] = useState([
     { id: '1', arrivalTime: '', burstTime: '', priority: '' },
@@ -54,6 +56,9 @@ const Table = ({ onEvaluate }) => {
       setShowSjf(true);
     } else if (title === 'Round Robin') {
       setShowRoundRobin(true); 
+    }
+    else if(title === 'Priority Non-Preemptive'){
+      setPrioritySJF(true);
     }
   };
 
@@ -191,7 +196,8 @@ const Table = ({ onEvaluate }) => {
 
       {showFcfs && <Fcfs rows={rows} />}
       {showSjf && <Sjf rows={rows} />}
-      {showRoundRobin && <RoundRobinScheduler rows={rows} quantum={quantum} />} {/* Render RoundRobinScheduler */}
+      {showRoundRobin && <RoundRobinScheduler rows={rows} quantum={quantum} />} 
+      {showPrioritySJF && <PrioritySJF rows={rows} />}
     </div>
   );
 };
