@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 
 const SJF = ({ rows }) => {
-  const [executedProcesses, setExecutedProcesses] = useState([]); // Track executed processes
+  const [executedProcesses, setExecutedProcesses] = useState([]); 
   const avgWaitingTimeRef = useRef(0);
   const avgTurnaroundTimeRef = useRef(0);
 
@@ -10,46 +10,38 @@ const SJF = ({ rows }) => {
       let totalWaitingTime = 0;
       let totalTurnaroundTime = 0;
 
-      const readyQueue = [...rows]; // Initialize the ready queue with all processes
+      const readyQueue = [...rows]; 
 
-      // Sort ready queue based on arrival time
       readyQueue.sort((a, b) => parseInt(a.arrivalTime) - parseInt(b.arrivalTime));
 
       const updatedExecutedProcesses = [];
 
-      let currentTime = 0; // Track current time
+      let currentTime = 0; 
 
       while (readyQueue.length > 0) {
-        // Filter processes that have arrived by the current time
+        
         const availableProcesses = readyQueue.filter(process => parseInt(process.arrivalTime) <= currentTime);
 
         if (availableProcesses.length === 0) {
-          // If no processes are available, move time forward to the arrival time of the next process
           currentTime = parseInt(readyQueue[0].arrivalTime);
           continue;
         }
 
-        // Find the process with the shortest burst time among available processes
         const shortestJob = availableProcesses.reduce((minProcess, currentProcess) => {
           return parseInt(currentProcess.burstTime) < parseInt(minProcess.burstTime) ? currentProcess : minProcess;
         });
 
-        // Update current time
         currentTime += parseInt(shortestJob.burstTime);
 
-        // Remove the executed process from the ready queue
         const index = readyQueue.findIndex(process => process === shortestJob);
         readyQueue.splice(index, 1);
 
-        // Calculate waiting time and turnaround time for the executed process
         const waitingTime = currentTime - parseInt(shortestJob.arrivalTime) - parseInt(shortestJob.burstTime);
         const turnaroundTime = waitingTime + parseInt(shortestJob.burstTime);
 
-        // Update total waiting time and total turnaround time
         totalWaitingTime += waitingTime;
         totalTurnaroundTime += turnaroundTime;
 
-        // Add the executed process to the updated executed processes
         updatedExecutedProcesses.push({
           ...shortestJob,
           waitingTime: waitingTime,
@@ -59,14 +51,12 @@ const SJF = ({ rows }) => {
         });
       }
 
-      // Calculate average waiting time and average turnaround time
       avgWaitingTimeRef.current = totalWaitingTime / rows.length;
       avgTurnaroundTimeRef.current = totalTurnaroundTime / rows.length;
 
-      // Set the executed processes
       setExecutedProcesses(updatedExecutedProcesses);
     }
-  }, [rows]); // Re-run whenever rows change
+  }, [rows]); 
 
   return (
     <div className='container my-5'>
