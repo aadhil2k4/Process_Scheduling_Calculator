@@ -15,7 +15,7 @@ const PrioritySJF = ({ rows }) => {
         if (parseInt(a.priority) !== parseInt(b.priority)) {
           return parseInt(a.priority) - parseInt(b.priority);
         } else {
-          return parseInt(a.burstTime) - parseInt(b.burstTime);
+          return parseInt(a.arrivalTime) - parseInt(b.arrivalTime);
         }
       });
 
@@ -40,7 +40,7 @@ const PrioritySJF = ({ rows }) => {
             selectedProcess = process;
           } else if (
             parseInt(process.priority) === parseInt(selectedProcess.priority) &&
-            parseInt(process.burstTime) < parseInt(selectedProcess.burstTime)
+            parseInt(process.arrivalTime) < parseInt(selectedProcess.arrivalTime)
           ) {
             selectedProcess = process;
           }
