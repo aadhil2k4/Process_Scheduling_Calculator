@@ -24,6 +24,7 @@ const RoundRobinScheduler = ({ rows, quantum }) => {
 
           if (burstTime > 0) {
             const executeTime = Math.min(quantum, burstTime);
+            const start = currentTime; // Keep track of the actual start time
             currentTime += executeTime;
             remainingBurstTimes[i] -= executeTime;
 
@@ -35,7 +36,7 @@ const RoundRobinScheduler = ({ rows, quantum }) => {
 
             updatedProcesses.push({
               ...sortedRows[i],
-              startTime: currentTime - executeTime,
+              startTime: start, // Set the actual start time
               finishTime: currentTime,
               waitingTime,
               turnaroundTime,
@@ -56,18 +57,6 @@ const RoundRobinScheduler = ({ rows, quantum }) => {
         finalProcesses[i] = updatedProcesses[index];
       }
 
-      for(let i = 0; i < sortedRows.length; i++) {
-        let index = 0;
-        for(let j = 0; j < updatedProcesses.length; j++) {
-          if (updatedProcesses[j].id === sortedRows[i].id) {
-            index = j;
-            break;
-          }
-        }
-        finalProcesses[i].startTime = updatedProcesses[index].startTime;
-      }
-
-
       const totalWaitingTime = waitingTimes.reduce((acc, val) => acc + val, 0);
       const totalTurnaroundTime = turnaroundTimes.reduce((acc, val) => acc + val, 0);
 
@@ -75,16 +64,16 @@ const RoundRobinScheduler = ({ rows, quantum }) => {
       avgTurnaroundTimeRef.current = totalTurnaroundTime / sortedRows.length;
 
       setProcesses(updatedProcesses);
-      setProcesses1(finalProcesses);
+      setProcesses1(finalProcesses); // Set processes1 with updatedProcesses
     }
   }, [rows, quantum]);
 
   return (
     <div className="container my-5">
-      <h4>Gantt Chart:</h4>
+      <h4>Output for Round Robin Algorithm:</h4>
       <div className="d-flex my-4">
         {processes.map((process) => (
-          <div key={process.id} className="border border-info text-center bg-light" style={{ height: '500%', width: '20%' }}>
+          <div key={process.id} className="border border-primary text-center" style={{ height: '500%', width: '20%' ,background: '#CBDBFF'}}>
             P{process.id}<br />
             ({process.startTime}-{process.finishTime})
           </div>

@@ -77,14 +77,14 @@ const PrioritySJF = ({ rows }) => {
   }, [rows]);
 
   return (
-    <div className="container my-5">
-      <h4>Gantt Chart:</h4>
+    <div className='container my-5'>
+      <h3>Output for Priority Non-Preemptive Algorithm:</h3>
+
       <div className="d-flex my-4">
         {executedProcesses.map((process, index) => (
           <div
             key={index}
-            className="border border-info text-center bg-light"
-            style={{ height: "500%", width: "20%" }}
+            className="border border-primary text-center" style={{ height: '500%', width: '20%', background: '#CBDBFF'}}
           >
             P{process.id}
             <br />({process.startTime}-{process.finishTime})

@@ -1,8 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Fcfs from "./Fcfs";
 import Sjf from "./Sjf";
 import RoundRobinScheduler from "./RR";
 import PrioritySJF from "./SJFPriority";
+import PreemptivePriority from "./PP";
+import SRTF from "./SrtfPre";
+import Spinner from "./Spinner";
 
 const Table = ({ onEvaluate }) => {
   const [title, setTitle] = useState("FCFS");
@@ -12,12 +15,22 @@ const Table = ({ onEvaluate }) => {
   const [showSjf, setShowSjf] = useState(false);
   const [showRoundRobin, setShowRoundRobin] = useState(false);
   const [showPrioritySJF, setPrioritySJF] = useState(false);
-
+  const [showPP, setPP] = useState(false);
+  const [showSRTF, setSRTF] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [rows, setRows] = useState([
     { id: "1", arrivalTime: "", burstTime: "", priority: "" },
     { id: "2", arrivalTime: "", burstTime: "", priority: "" },
     { id: "3", arrivalTime: "", burstTime: "", priority: "" },
   ]);
+
+  useEffect(() => {
+    setRows([
+      { id: "1", arrivalTime: "", burstTime: "", priority: "" },
+      { id: "2", arrivalTime: "", burstTime: "", priority: "" },
+      { id: "3", arrivalTime: "", burstTime: "", priority: "" },
+    ]);
+  }, [title]);
 
   const addRow = () => {
     const newRow = {
@@ -41,27 +54,41 @@ const Table = ({ onEvaluate }) => {
         algoName === "Priority Non-Preemptive"
     );
     setQuantum(algoName === "Round Robin" ? true : false);
+    setShowFcfs(false);
+    setShowSjf(false);
+    setShowRoundRobin(false);
+    setPrioritySJF(false);
+    setPP(false);
+    setSRTF(false);
   };
 
   const handleEvaluate = () => {
-    const tableData = rows.map((row) => ({
-      id: row.id,
-      arrivalTime: row.arrivalTime,
-      burstTime: row.burstTime,
-      priority: row.priority,
-    }));
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
 
-    onEvaluate(tableData, quantum);
+      const tableData = rows.map((row) => ({
+        id: row.id,
+        arrivalTime: row.arrivalTime,
+        burstTime: row.burstTime,
+        priority: row.priority,
+      }));
 
-    if (title === "FCFS") {
-      setShowFcfs(true);
-    } else if (title === "SJF") {
-      setShowSjf(true);
-    } else if (title === "Round Robin") {
-      setShowRoundRobin(true);
-    } else if (title === "Priority Non-Preemptive") {
-      setPrioritySJF(true);
-    }
+      onEvaluate(tableData, quantum);
+      if (title === "FCFS") {
+        setShowFcfs(true);
+      } else if (title === "SJF") {
+        setShowSjf(true);
+      } else if (title === "Round Robin") {
+        setShowRoundRobin(true);
+      } else if (title === "Priority Non-Preemptive") {
+        setPrioritySJF(true);
+      } else if (title === "Priority Preemptive") {
+        setPP(true);
+      } else if (title === "SRTF") {
+        setSRTF(true);
+      }
+    }, 1000);
   };
 
   return (
@@ -248,11 +275,13 @@ const Table = ({ onEvaluate }) => {
           </button>
         </div>
       </div>
-
+      {loading && <Spinner />}
       {showFcfs && <Fcfs rows={rows} />}
       {showSjf && <Sjf rows={rows} />}
       {showRoundRobin && <RoundRobinScheduler rows={rows} quantum={quantum} />}
       {showPrioritySJF && <PrioritySJF rows={rows} />}
+      {showPP && <PreemptivePriority rows={rows} />}
+      {showSRTF && <SRTF rows={rows} />}
     </div>
   );
 };

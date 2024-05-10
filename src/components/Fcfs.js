@@ -41,10 +41,10 @@ const FCFS = ({ rows }) => {
   }, [rows]);
 
   return (
-    <div className='container my-5'>
-      <h4>Gantt Chart:</h4>
+    <div className='container my-5 '>
+      <h3>Output for FCFS Algorithm:</h3>
       <div className='d-flex my-4'>
-        {processes.map((process)=>(<div className="border border-info text-center bg-light" style={{height: '500%', width: '20%'}}>P{process.id}<br/>({process.startTime}-{process.finishTime})</div>))}
+        {processes.map((process)=>(<div className="border border-primary text-center" style={{ height: '500%', width: '20%', background: '#CBDBFF'}}>P{process.id}<br/>({process.startTime}-{process.finishTime})</div>))}
       </div>
       <table style={{margin: "auto"}} class="table text-center table-bordered">
         <thead>
