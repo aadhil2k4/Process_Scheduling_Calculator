@@ -1,16 +1,13 @@
 import React from 'react';
-import './App.css';
-import Navbar from './components/Navbar';
+import { Route, Switch } from 'react-router-dom';
 import Table from './components/Table';
 
-const App = () => {
-  const handleEvaluate = (inputData) =>{
-    console.log(inputData)
-  }
+function App() {
   return (
-    <div>
-      <Navbar />
-      <Table onEvaluate={handleEvaluate}/>
+    <div className="App">
+      <Switch>
+        <Route exact path="/" component={Table} />
+      </Switch>
     </div>
   );
 }
