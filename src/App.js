@@ -1,13 +1,13 @@
 import React from 'react';
-import { Route, Switch } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import Table from './components/Table';
 
 function App() {
   return (
     <div className="App">
-      <Switch>
-        <Route exact path="/" component={Table} />
-      </Switch>
+      <Routes>
+        <Route path="/" element={<Table />} />
+      </Routes>
     </div>
   );
 }
