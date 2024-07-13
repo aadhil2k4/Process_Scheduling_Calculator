@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import Fcfs from "./Fcfs";
 import Sjf from "./Sjf";
 import RoundRobinScheduler from "./RR";
@@ -112,58 +113,34 @@ const Table = ({ onEvaluate }) => {
           </button>
           <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
             <li>
-              <a
-                className="dropdown-item"
-                onClick={() => setAlgo("FCFS")}
-                href="/#"
-              >
+              <Link className="dropdown-item" onClick={() => setAlgo("FCFS")} to="#">
                 FCFS
-              </a>
+              </Link>
             </li>
             <li>
-              <a
-                className="dropdown-item"
-                onClick={() => setAlgo("SJF")}
-                href="/#"
-              >
+              <Link className="dropdown-item" onClick={() => setAlgo("SJF")} to="#">
                 SJF
-              </a>
+              </Link>
             </li>
             <li>
-              <a
-                className="dropdown-item"
-                onClick={() => setAlgo("SRTF")}
-                href="/#"
-              >
+              <Link className="dropdown-item" onClick={() => setAlgo("SRTF")} to="#">
                 SRTF
-              </a>
+              </Link>
             </li>
             <li>
-              <a
-                className="dropdown-item"
-                onClick={() => setAlgo("Round Robin")}
-                href="/#"
-              >
+              <Link className="dropdown-item" onClick={() => setAlgo("Round Robin")} to="#">
                 Round Robin
-              </a>
+              </Link>
             </li>
             <li>
-              <a
-                className="dropdown-item"
-                onClick={() => setAlgo("Priority Preemptive")}
-                href="/#"
-              >
+              <Link className="dropdown-item" onClick={() => setAlgo("Priority Preemptive")} to="#">
                 Priority Preemptive
-              </a>
+              </Link>
             </li>
             <li>
-              <a
-                className="dropdown-item"
-                onClick={() => setAlgo("Priority Non-Preemptive")}
-                href="/#"
-              >
+              <Link className="dropdown-item" onClick={() => setAlgo("Priority Non-Preemptive")} to="#">
                 Priority Non-Preemptive
-              </a>
+              </Link>
             </li>
           </ul>
         </div>
@@ -247,22 +224,21 @@ const Table = ({ onEvaluate }) => {
                 )}
               </tr>
             ))}
-            <a href="/#" onClick={addRow}>
+            <button onClick={addRow} className="btn btn-link p-0">
               <i
                 className="uil uil-plus-circle"
                 style={{ fontSize: "30px", color: "black" }}
               ></i>
-            </a>
-            <a
-              href="/#"
+            </button>
+            <button
               onClick={() => removeRow(rows[rows.length - 1].id)}
-              className="mx-3"
+              className="btn btn-link p-0 mx-3"
             >
               <i
                 className="uil uil-minus-circle"
                 style={{ fontSize: "30px", color: "black" }}
               ></i>
-            </a>
+            </button>
           </tbody>
         </table>
         <div className="text-center">
