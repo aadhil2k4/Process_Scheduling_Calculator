@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/Process_Scheduling_Calculator/static/css/main.31d6cfe0.css",
-    "main.js": "/Process_Scheduling_Calculator/static/js/main.f8b4c96c.js",
+    "main.js": "/Process_Scheduling_Calculator/static/js/main.7742c2d1.js",
     "static/media/loader.gif": "/Process_Scheduling_Calculator/static/media/loader.703df2c2be7cff8640ac.gif",
     "index.html": "/Process_Scheduling_Calculator/index.html",
-    "main.f8b4c96c.js.map": "/Process_Scheduling_Calculator/static/js/main.f8b4c96c.js.map"
+    "main.7742c2d1.js.map": "/Process_Scheduling_Calculator/static/js/main.7742c2d1.js.map"
   },
   "entrypoints": [
     "static/css/main.31d6cfe0.css",
-    "static/js/main.f8b4c96c.js"
+    "static/js/main.7742c2d1.js"
   ]
 }
