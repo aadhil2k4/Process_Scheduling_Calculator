@@ -8,7 +8,7 @@ import PreemptivePriority from "./PP";
 import SRTF from "./SrtfPre";
 import Spinner from "./Spinner";
 
-const Table = ({ onEvaluate }) => {
+const Table = ( {onEvaluate=()=>{}} ) => {
   const [title, setTitle] = useState("FCFS");
   const [priority, setPriority] = useState(false);
   const [quantum, setQuantum] = useState("");
